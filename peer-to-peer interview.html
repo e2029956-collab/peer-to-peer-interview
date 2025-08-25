@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Your Classmate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            min-height: calc(100vh - 20px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            transition: width 0.3s ease;
+            width: 7.69%;
+        }
+
+        .form-container {
+            padding: 25px 20px;
+        }
+
+        .step {
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .question-group {
+            margin-bottom: 25px;
+        }
+
+        .question-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 17px;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #7f8c8d;
+            font-weight: 400;
+            margin-top: 5px;
+        }
+
+        .interviewer-info {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .interviewer-info h4 {
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .textarea-field {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .chip {
+            padding: 8px 16px;
+            background: #e9ecef;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .chip:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .chip.selected {
+            background: #667eea;
+            color: white;
+            border-color: #5a6fd8;
+        }
+
+        .zodiac-chip {
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .zodiac-chip:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .zodiac-chip.selected {
+            background: #667eea;
+            color: white;
+            border-color: #5a6fd8;
+        }
+
+        .zodiac-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .zodiac-transcription {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+
+        .zodiac-dates {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            flex: 2;
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+
+        .profile-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .profile-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .profile-item:last-child {
+            border-bottom: none;
+        }
+
+        .profile-item strong {
+            color: #2c3e50;
+            min-width: 100px;
+            flex-shrink: 0;
+        }
+
+        .profile-value {
+            text-align: right;
+            flex: 1;
+        }
+
+        .emoji {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        .fun-fact {
+            background: #e8f4fd;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .step-counter {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .language-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .random-question {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .screenshot-reminder {
+            background: linear-gradient(135deg, #48cae4, #0077b6);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .zodiac-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .interview-tip {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 10px;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 14px;
+            border-left: 4px solid #f39c12;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎤 Interview Your Classmate</h1>
+            <p>Discover interesting facts about each other!</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="form-container">
+            <div class="step-counter">
+                <span id="stepCounter">Question 1 of 14</span>
+            </div>
+
+            <!-- Step 0: Setup -->
+            <div class="step active" data-step="0">
+                <div class="interviewer-info">
+                    <h4>📝 Before you start:</h4>
+                    <p><strong>Interviewer:</strong> That's you! You'll ask the questions.</p>
+                    <p><strong>Interviewee:</strong> Your classmate who will answer.</p>
+                </div>
+                
+                <div class="question-group">
+                    <label><span class="emoji">👤</span>Who are you interviewing?</label>
+                    <input type="text" id="intervieweeName" class="input-field" placeholder="Your classmate's name" maxlength="50">
+                    <div class="error" id="intervieweeError"></div>
+                </div>
+                
+                <div class="question-group">
+                    <label><span class="emoji">🎤</span>What's your name (interviewer)?</label>
+                    <input type="text" id="interviewerName" class="input-field" placeholder="Your name" maxlength="50">
+                    <div class="error" id="interviewerError"></div>
+                </div>
+
+                <div class="interview-tip">
+                    💡 <strong>Tip:</strong> Ask follow-up questions and show genuine interest!
+                </div>
+            </div>
+
+            <!-- Step 1: Basic Introduction -->
+            <div class="step" data-step="1">
+                <div class="question-group">
+                    <label><span class="emoji">👋</span>Ask about the basics
+                        <div class="subtitle">Start with simple questions to break the ice</div>
+                    </label>
+                    <input type="text" id="nickname" class="input-field" placeholder="What do your friends call you?" maxlength="50">
+                    <input type="text" id="hometown" class="input-field" placeholder="Where are you from originally?" style="margin-top: 10px;">
+                </div>
+
+                <div class="interview-tip">
+                    🗣️ Try asking: "Do you have any interesting nicknames?" or "Tell me about your hometown!"
+                </div>
+            </div>
+
+            <!-- Step 2: Current Situation -->
+            <div class="step" data-step="2">
+                <div class="question-group">
+                    <label><span class="emoji">🏠</span>Ask: "Where do you live now?"
+                        <div class="subtitle">Is it different from their hometown?</div>
+                    </label>
+                    <input type="text" id="currentCity" class="input-field" placeholder="Current city">
+                </div>
+                
+                <div class="question-group">
+                    <label><span class="emoji">🎓</span>Ask: "What year of study are you in?"</label>
+                    <div class="chip-group">
+                        <div class="chip" data-value="1st">1st Year</div>
+                        <div class="chip" data-value="2nd">2nd Year</div>
+                        <div class="chip" data-value="3rd">3rd Year</div>
+                        <div class="chip" data-value="4th">4th Year</div>
+                        <div class="chip" data-value="master">Master's</div>
+                        <div class="chip" data-value="phd">PhD</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Language Background -->
+            <div class="step" data-step="3">
+                <div class="question-group">
+                    <label><span class="emoji">🗣️</span>Ask about their language background
+                        <div class="subtitle">"What languages do you speak and how well?"</div>
+                    </label>
+                    <div id="languageInputs">
+                        <div class="language-item">
+                            <input type="text" class="input-field" placeholder="Language (e.g. Spanish)" style="margin-bottom: 8px;">
+                            <div class="chip-group">
+                                <div class="chip" data-level="native">Native</div>
+                                <div class="chip" data-level="fluent">Fluent</div>
+                                <div class="chip" data-level="intermediate">Intermediate</div>
+                                <div class="chip" data-level="basic">Basic</div>
+                                <div class="chip" data-level="learning">Just Learning</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn" onclick="addLanguage()" style="background: #28a745; margin-top: 10px; padding: 12px;">+ Add Another Language</button>
+                </div>
+
+                <div class="interview-tip">
+                    💬 Good follow-ups: "Which language was hardest to learn?" or "Do you dream in different languages?"
+                </div>
+            </div>
+
+            <!-- Step 4: Zodiac Sign -->
+            <div class="step" data-step="4">
+                <div class="question-group">
+                    <label><span class="emoji">⭐</span>Ask: "What's your zodiac sign?"
+                        <div class="subtitle">You can help them find it by birth date!</div>
+                    </label>
+                    <div class="zodiac-grid" id="zodiacGrid">
+                        <div class="zodiac-chip" data-value="aries">
+                            <div class="zodiac-name">♈ Aries</div>
+                            <div class="zodiac-transcription">/ˈeəriːz/</div>
+                            <div class="zodiac-dates">March 21 - April 19</div>
+                        </div>
+                        <div class="zodiac-chip" data-value="taurus">
+                            <div class="zodiac-name">♉ Taurus</div>
+                            <div class="zodiac-transcription">/ˈtɔːrəs/</div>
+                            <div class="zodiac-dates">April 20 - May 20</div>
+                        </div>
+                        <div class="zodiac-chip" data-value="gemini">
+                            <div class="zodiac-name">♊ Gemini</div>
+                            <div class="zodiac-transcription">/ˈdʒemɪnaɪ/</div>
+                            <div class="zodiac-dates">May 21 - June 20</div>
+                        </div>
+                        <div class="zodiac-chip" data-value="cancer">
+                            <div class="zodiac-name">♋ Cancer</div>
+                            <div class="zodiac-transcription">/ˈkænsər/</div>
+                            <div class="zodiac-dates">June 21 - July 22</div>
+                        </div>
+                        <div class="zodiac-chip" data-value="leo">
+                            <div class="zodiac-name">♌ Leo</div>
+                            <div class="zodiac-transcription">/ˈliːəʊ/</div>
+                            <div class="zodiac-dates">July 23 - August 22</div>
+                        </div>
+                        <div class="zodiac-chip" data-value="virgo">
+                            <div class="zodiac-name">♍ Virgo</div>
+                            <div class="zodiac-transcription">/ˈvɜːɡəʊ/</div>
+                            <div class="zodiac-dates">August 23 - September 22</div>
+                        </div>
+                        <div class="zodiac-chip" data-value="libra">
+                            <div class="zodiac-name">♎ Libra</div>
+                            <div class="zodiac-transcription">/ˈliːbrə/</div>
+                            <div class="zodiac-dates">September 23 - October 22</div>
+                        </div>
+                        <div class="zodiac-chip" data-value="scorpio">
+                            <div class="zodiac-name">♏ Scorpio</div>
+                            <div class="zodiac-transcription">/ˈskɔːpiəʊ/</div>
+                            <div class="zodiac-dates">October 23 - November 21</div>
+                        </div>
+                        <div class="zodiac-chip" data-value="sagittarius">
+                            <div class="zodiac-name">♐ Sagittarius</div>
+                            <div class="zodiac-transcription">/ˌsædʒɪˈteəriəs/</div>
+                            <div class="zodiac-dates">November 22 - December 21</div>
+                        </div>
+                        <div class="zodiac-chip" data-value="capricorn">
+                            <div class="zodiac-name">♑ Capricorn</div>
+                            <div class="zodiac-transcription">/ˈkæprɪkɔːn/</div>
+                            <div class="zodiac-dates">December 22 - January 19</div>
+                        </div>
+                        <div class="zodiac-chip" data-value="aquarius">
+                            <div class="zodiac-name">♒ Aquarius</div>
+                            <div class="zodiac-transcription">/əˈkweəriəs/</div>
+                            <div class="zodiac-dates">January 20 - February 18</div>
+                        </div>
+                        <div class="zodiac-chip" data-value="pisces">
+                            <div class="zodiac-name">♓ Pisces</div>
+                            <div class="zodiac-transcription">/ˈpaɪsiːz/</div>
+                            <div class="zodiac-dates">February 19 - March 20</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="interview-tip">
+                    🔮 Fun follow-up: "Do you believe in horoscopes?" or "Does this sign match your personality?"
+                </div>
+            </div>
+
+            <!-- Step 5: Why Linguistics? -->
+            <div class="step" data-step="5">
+                <div class="question-group">
+                    <label><span class="emoji">💡</span>Ask: "What made you choose linguistics?"
+                        <div class="subtitle">Everyone has a different story...</div>
+                    </label>
+                    <div class="chip-group" id="motivationChips">
+                        <div class="chip" data-value="languages">Love for languages</div>
+                        <div class="chip" data-value="brain">How the brain works</div>
+                        <div class="chip" data-value="culture">Language & culture</div>
+                        <div class="chip" data-value="teaching">Want to teach</div>
+                        <div class="chip" data-value="technology">Language tech/AI</div>
+                        <div class="chip" data-value="translation">Translation work</div>
+                        <div class="chip" data-value="curiosity">Pure curiosity</div>
+                        <div class="chip" data-value="accidentally">Chose by accident</div>
+                    </div>
+                </div>
+                
+                <div class="question-group">
+                    <label><span class="emoji">✨</span>Ask: "What excites you most about language?"</label>
+                    <textarea id="languageExcitement" class="input-field textarea-field" placeholder="Write down their answer..."></textarea>
+                </div>
+            </div>
+
+            <!-- Step 6: Interests & Hobbies -->
+            <div class="step" data-step="6">
+                <div class="question-group">
+                    <label><span class="emoji">🎨</span>Ask: "What do you enjoy doing in your free time?"
+                        <div class="subtitle">Besides studying linguistics, of course!</div>
+                    </label>
+                    <div class="chip-group" id="hobbiesChips">
+                        <div class="chip" data-value="reading">Reading</div>
+                        <div class="chip" data-value="music">Music</div>
+                        <div class="chip" data-value="sports">Sports</div>
+                        <div class="chip" data-value="travel">Traveling</div>
+                        <div class="chip" data-value="cooking">Cooking</div>
+                        <div class="chip" data-value="gaming">Gaming</div>
+                        <div class="chip" data-value="art">Art/Drawing</div>
+                        <div class="chip" data-value="podcasts">Podcasts</div>
+                        <div class="chip" data-value="movies">Movies/TV</div>
+                        <div class="chip" data-value="photography">Photography</div>
+                        <div class="chip" data-value="dancing">Dancing</div>
+                        <div class="chip" data-value="writing">Creative Writing</div>
+                    </div>
+                </div>
+
+                <div class="interview-tip">
+                    🤔 Dig deeper: "What got you into that?" or "What's the best book/movie you've experienced lately?"
+                </div>
+            </div>
+
+            <!-- Step 7: Favorites -->
+            <div class="step" data-step="7">
+                <div class="question-group">
+                    <label><span class="emoji">📚</span>Ask: "What's your favorite book or author?"
+                        <div class="subtitle">Any genre counts!</div>
+                    </label>
+                    <input type="text" id="favoriteBook" class="input-field" placeholder="Book title or author name">
+                </div>
+                
+                <div class="question-group">
+                    <label><span class="emoji">🎵</span>Ask: "What music gets you in the mood to study?"</label>
+                    <input type="text" id="studyMusic" class="input-field" placeholder="Artist, genre, or 'complete silence'">
+                </div>
+                
+                <div class="question-group">
+                    <label><span class="emoji">☕</span>Ask: "What's your go-to drink for long study sessions?"</label>
+                    <div class="chip-group">
+                        <div class="chip" data-value="coffee">Coffee</div>
+                        <div class="chip" data-value="tea">Tea</div>
+                        <div class="chip" data-value="energy">Energy Drinks</div>
+                        <div class="chip" data-value="water">Just Water</div>
+                        <div class="chip" data-value="juice">Juice</div>
+                        <div class="chip" data-value="other">Something Else</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 8: Learning Style -->
+            <div class="step" data-step="8">
+                <div class="question-group">
+                    <label><span class="emoji">🧠</span>Ask: "How do you learn best?"</label>
+                    <div class="chip-group" id="learningChips">
+                        <div class="chip" data-value="visual">Visual learner</div>
+                        <div class="chip" data-value="auditory">Need to hear it</div>
+                        <div class="chip" data-value="hands-on">Hands-on practice</div>
+                        <div class="chip" data-value="discussion">Group discussions</div>
+                        <div class="chip" data-value="alone">Study alone</div>
+                        <div class="chip" data-value="examples">Need lots of examples</div>
+                    </div>
+                </div>
+                
+                <div class="question-group">
+                    <label><span class="emoji">⏰</span>Ask: "When are you most productive?"</label>
+                    <div class="chip-group">
+                        <div class="chip" data-value="morning">Early morning</div>
+                        <div class="chip" data-value="afternoon">Afternoon</div>
+                        <div class="chip" data-value="evening">Evening</div>
+                        <div class="chip" data-value="night">Late night</div>
+                        <div class="chip" data-value="depends">It depends</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 9: Fun Facts -->
+            <div class="step" data-step="9">
+                <div class="random-question">
+                    <strong>🎲 Fun Question Time!</strong>
+                </div>
+                
+                <div class="question-group">
+                    <label><span class="emoji">🌍</span>Ask: "If you could instantly become fluent in any language, which would it be and why?"</label>
+                    <textarea id="dreamLanguage" class="input-field textarea-field" placeholder="Write their answer..."></textarea>
+                </div>
+                
+                <div class="question-group">
+                    <label><span class="emoji">🤔</span>Ask: "What's something most people don't know about you?"</label>
+                    <input type="text" id="funFact" class="input-field" placeholder="Record their interesting fact...">
+                </div>
+            </div>
+
+            <!-- Step 10: Expectations & Goals -->
+            <div class="step" data-step="10">
+                <div class="question-group">
+                    <label><span class="emoji">🎯</span>Ask: "What do you hope to get out of this course?"</label>
+                    <div class="chip-group" id="expectationsChips">
+                        <div class="chip" data-value="theory">Understand linguistic theory</div>
+                        <div class="chip" data-value="skills">Develop analytical skills</div>
+                        <div class="chip" data-value="career">Prepare for career</div>
+                        <div class="chip" data-value="research">Learn to do research</div>
+                        <div class="chip" data-value="friends">Make new friends</div>
+                        <div class="chip" data-value="passion">Explore my passion</div>
+                        <div class="chip" data-value="grades">Get good grades</div>
+                        <div class="chip" data-value="perspective">New perspective on language</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 11: Future Plans -->
+            <div class="step" data-step="11">
+                <div class="question-group">
+                    <label><span class="emoji">🚀</span>Ask: "What are your plans after graduation?"
+                        <div class="subtitle">Dreams are welcome too!</div>
+                    </label>
+                    <div class="chip-group" id="futureChips">
+                        <div class="chip" data-value="graduate-school">Graduate school</div>
+                        <div class="chip" data-value="teaching">Teaching</div>
+                        <div class="chip" data-value="translator">Translation/Interpreting</div>
+                        <div class="chip" data-value="tech">Tech industry</div>
+                        <div class="chip" data-value="research">Research</div>
+                        <div class="chip" data-value="travel">Travel the world</div>
+                        <div class="chip" data-value="unsure">Still figuring it out</div>
+                        <div class="chip" data-value="publishing">Writing/Publishing</div>
+                    </div>
+                </div>
+                
+                <div class="question-group">
+                    <label><span class="emoji">💭</span>Ask: "Any specific dream job or project?"</label>
+                    <textarea id="dreamJob" class="input-field textarea-field" placeholder="Record their dream..."></textarea>
+                </div>
+            </div>
+
+            <!-- Step 12: Course Preferences -->
+            <div class="step" data-step="12">
+                <div class="question-group">
+                    <label><span class="emoji">🤝</span>Ask: "How do you prefer to work in class?"</label>
+                    <div class="chip-group" id="workStyleChips">
+                        <div class="chip" data-value="individual">Individual work</div>
+                        <div class="chip" data-value="pairs">In pairs</div>
+                        <div class="chip" data-value="small-groups">Small groups</div>
+                        <div class="chip" data-value="whole-class">Whole class discussions</div>
+                        <div class="chip" data-value="mix">Mix of everything</div>
+                    </div>
+                </div>
+                
+                <div class="question-group">
+                    <label><span class="emoji">😰</span>Ask: "What makes you nervous in class?"</label>
+                    <div class="chip-group">
+                        <div class="chip" data-value="speaking">Speaking up</div>
+                        <div class="chip" data-value="wrong">Being wrong</div>
+                        <div class="chip" data-value="presentations">Presentations</div>
+                        <div class="chip" data-value="grammar">Complex grammar</div>
+                        <div class="chip" data-value="nothing">Nothing really</div>
+                        <div class="chip" data-value="everything">Everything!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 13: Final Profile -->
+            <div class="step" data-step="13">
+                <div id="loadingSection" class="loading" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Saving the interview data...</p>
+                </div>
+
+                <div id="profileSection">
+                    <div class="profile-card">
+                        <h3>🌟 Meet <span id="profileName">Your Classmate</span>!</h3>
+                        <div id="profileContent">
+                            <!-- Profile will be generated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="screenshot-reminder">
+                        <h4>📸 Don't forget to take a screenshot!</h4>
+                        <p>Save this profile - your teacher will use these for fun guessing games!</p>
+                    </div>
+                    
+                    <div class="fun-fact">
+                        <strong>🎮 What happens next:</strong><br>
+                        • Your teacher collects all profiles<br>
+                        • Class plays "Guess Who?" games<br>
+                        • Mix facts from different people<br>
+                        • Great for ice-breakers and pair work!
+                    </div>
+                    
+                    <button class="btn" onclick="createNewProfile()" style="background: linear-gradient(135deg, #28a745, #20c997);">🎤 Interview Another Classmate</button>
+                </div>
+
+                <div id="successSection" class="success-message" style="display: none;">
+                    <h4>✅ Interview saved successfully!</h4>
+                    <p>The data has been sent to your teacher for class activities.</p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prevBtn" onclick="changeStep(-1)" style="display: none;">← Back</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;  // Start from setup step
+        const totalSteps = 14;  // Include setup step
+        const formData = {
+            languages: [],
+            selectedChips: {
+                motivation: new Set(),
+                hobbies: new Set(),
+                learning: new Set(),
+                expectations: new Set(),
+                future: new Set(),
+                workStyle: new Set()
+            }
+        };
+
+        // Google Apps Script URL - connected to your spreadsheet
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcfpoRt2q_eWr0yy6YxJKAlnde59xdv25nJSCvmn2D4kEngZng66HPxcLW8PqnEG2D/exec';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupChipGroups();
+            setupLanguageInputs();
+            setupZodiacSelection();
+            updateNavigationButtons();
+        });
+
+        function setupChipGroups() {
+            const chipGroups = [
+                { id: 'motivationChips', key: 'motivation' },
+                { id: 'hobbiesChips', key: 'hobbies' },
+                { id: 'learningChips', key: 'learning' },
+                { id: 'expectationsChips', key: 'expectations' },
+                { id: 'futureChips', key: 'future' },
+                { id: 'workStyleChips', key: 'workStyle' }
+            ];
+
+            chipGroups.forEach(group => {
+                const element = document.getElementById(group.id);
+                if (element) {
+                    const chips = element.querySelectorAll('.chip');
+                    chips.forEach(chip => {
+                        chip.addEventListener('click', function() {
+                            this.classList.toggle('selected');
+                            const value = this.dataset.value;
+                            
+                            if (this.classList.contains('selected')) {
+                                formData.selectedChips[group.key].add(value);
+                            } else {
+                                formData.selectedChips[group.key].delete(value);
+                            }
+                        });
+                    });
+                }
+            });
+
+            // Single select chips
+            const singleSelectGroups = ['[data-step="2"] .chip-group', '[data-step="7"] .chip-group:last-of-type', '[data-step="8"] .chip-group:last-of-type', '[data-step="12"] .chip-group:last-of-type'];
+            
+            singleSelectGroups.forEach(selector => {
+                const groups = document.querySelectorAll(selector);
+                groups.forEach(group => {
+                    const chips = group.querySelectorAll('.chip');
+                    chips.forEach(chip => {
+                        chip.addEventListener('click', function() {
+                            chips.forEach(c => c.classList.remove('selected'));
+                            this.classList.add('selected');
+                        });
+                    });
+                });
+            });
+        }
+
+        function setupLanguageInputs() {
+            document.getElementById('languageInputs').addEventListener('click', function(e) {
+                if (e.target.classList.contains('chip')) {
+                    const languageItem = e.target.closest('.language-item');
+                    const chips = languageItem.querySelectorAll('.chip');
+                    chips.forEach(chip => chip.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                }
+            });
+        }
+
+        function setupZodiacSelection() {
+            const zodiacChips = document.querySelectorAll('.zodiac-chip');
+            zodiacChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    zodiacChips.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    formData.zodiacSign = this.dataset.value;
+                });
+            });
+        }
+
+        function addLanguage() {
+            const container = document.getElementById('languageInputs');
+            const newItem = document.createElement('div');
+            newItem.className = 'language-item';
+            newItem.innerHTML = `
+                <input type="text" class="input-field" placeholder="Language (e.g. French)" style="margin-bottom: 8px;">
+                <div class="chip-group">
+                    <div class="chip" data-level="native">Native</div>
+                    <div class="chip" data-level="fluent">Fluent</div>
+                    <div class="chip" data-level="intermediate">Intermediate</div>
+                    <div class="chip" data-level="basic">Basic</div>
+                    <div class="chip" data-level="learning">Just Learning</div>
+                </div>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function changeStep(direction) {
+            if (direction === 1) {
+                if (!validateCurrentStep()) {
+                    return;
+                }
+                saveCurrentStep();
+            }
+
+            const newStep = currentStep + direction;
+            
+            if (newStep < 0 || newStep >= totalSteps) {
+                return;
+            }
+
+            document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+            
+            currentStep = newStep;
+            document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+            
+            updateProgressBar();
+            updateNavigationButtons();
+            updateStepCounter();
+
+            if (currentStep === totalSteps - 1) {
+                generateProfile();
+                sendDataToGoogleSheets();
+            }
+        }
+
+        function validateCurrentStep() {
+            clearErrors();
+            let isValid = true;
+
+            if (currentStep === 0) {
+                const intervieweeName = document.getElementById('intervieweeName').value.trim();
+                const interviewerName = document.getElementById('interviewerName').value.trim();
+                
+                if (!intervieweeName) {
+                    showError('intervieweeError', 'Please enter the name of person you\'re interviewing');
+                    isValid = false;
+                }
+                
+                if (!interviewerName) {
+                    showError('interviewerError', 'Please enter your name');
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+
+        function showError(elementId, message) {
+            document.getElementById(elementId).textContent = message;
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.error').forEach(error => {
+                error.textContent = '';
+            });
+        }
+
+        function saveCurrentStep() {
+            const inputs = document.querySelectorAll(`[data-step="${currentStep}"] input, [data-step="${currentStep}"] textarea`);
+            inputs.forEach(input => {
+                if (input.value.trim() && input.id) {
+                    formData[input.id] = input.value.trim();
+                }
+            });
+
+            if (currentStep === 3) {
+                const languageItems = document.querySelectorAll('.language-item');
+                formData.languages = [];
+                languageItems.forEach(item => {
+                    const nameInput = item.querySelector('.input-field');
+                    const selectedLevel = item.querySelector('.chip.selected');
+                    if (nameInput.value.trim() && selectedLevel) {
+                        formData.languages.push({
+                            name: nameInput.value.trim(),
+                            level: selectedLevel.dataset.level
+                        });
+                    }
+                });
+            }
+
+            const singleSelects = document.querySelectorAll(`[data-step="${currentStep}"] .chip.selected`);
+            singleSelects.forEach(chip => {
+                const value = chip.dataset.value;
+                if (chip.closest('[data-step="2"]')) {
+                    formData.yearOfStudy = value;
+                } else if (chip.closest('[data-step="7"]') && chip.closest('.chip-group:last-of-type')) {
+                    formData.studyDrink = value;
+                } else if (chip.closest('[data-step="8"]') && chip.closest('.chip-group:last-of-type')) {
+                    formData.productiveTime = value;
+                } else if (chip.closest('[data-step="12"]') && chip.closest('.chip-group:last-of-type')) {
+                    formData.classNerves = value;
+                }
+            });
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentStep + 1) / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.style.display = currentStep > 0 ? 'block' : 'none';
+            
+            if (currentStep === totalSteps - 1) {
+                nextBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'block';
+            }
+        }
+
+        function updateStepCounter() {
+            if (currentStep === 0) {
+                document.getElementById('stepCounter').textContent = 'Setup';
+            } else {
+                document.getElementById('stepCounter').textContent = `Question ${currentStep} of ${totalSteps - 1}`;
+            }
+        }
+
+        function generateProfile() {
+            const profileContent = document.getElementById('profileContent');
+            const profileName = document.getElementById('profileName');
+            
+            if (formData.intervieweeName) {
+                profileName.textContent = formData.intervieweeName;
+            }
+
+            let html = '';
+
+            if (formData.intervieweeName) {
+                html += `<div class="profile-item"><strong>👋 Name:</strong> <div class="profile-value">${formData.intervieweeName}</div></div>`;
+            }
+            
+            if (formData.nickname && formData.nickname !== formData.intervieweeName) {
+                html += `<div class="profile-item"><strong>😊 Nickname:</strong> <div class="profile-value">${formData.nickname}</div></div>`;
+            }
+
+            if (formData.hometown) {
+                html += `<div class="profile-item"><strong>📍 From:</strong> <div class="profile-value">${formData.hometown}</div></div>`;
+            }
+
+            if (formData.currentCity && formData.currentCity !== formData.hometown) {
+                html += `<div class="profile-item"><strong>🏠 Lives in:</strong> <div class="profile-value">${formData.currentCity}</div></div>`;
+            }
+
+            if (formData.yearOfStudy) {
+                html += `<div class="profile-item"><strong>🎓 Year:</strong> <div class="profile-value">${formData.yearOfStudy}</div></div>`;
+            }
+
+            if (formData.zodiacSign) {
+                const zodiacNames = {
+                    'aries': '♈ Aries', 'taurus': '♉ Taurus', 'gemini': '♊ Gemini', 'cancer': '♋ Cancer',
+                    'leo': '♌ Leo', 'virgo': '♍ Virgo', 'libra': '♎ Libra', 'scorpio': '♏ Scorpio',
+                    'sagittarius': '♐ Sagittarius', 'capricorn': '♑ Capricorn', 'aquarius': '♒ Aquarius', 'pisces': '♓ Pisces'
+                };
+                html += `<div class="profile-item"><strong>⭐ Zodiac:</strong> <div class="profile-value">${zodiacNames[formData.zodiacSign]}</div></div>`;
+            }
+
+            if (formData.languages && formData.languages.length > 0) {
+                html += `<div class="profile-item"><strong>🗣️ Languages:</strong> <div class="profile-value">`;
+                formData.languages.forEach((lang, index) => {
+                    html += `${lang.name} (${lang.level})`;
+                    if (index < formData.languages.length - 1) html += ', ';
+                });
+                html += `</div></div>`;
+            }
+
+            if (formData.selectedChips.motivation.size > 0) {
+                html += `<div class="profile-item"><strong>💡 Chose linguistics because:</strong> <div class="profile-value">${Array.from(formData.selectedChips.motivation).join(', ')}</div></div>`;
+            }
+
+            if (formData.selectedChips.hobbies.size > 0) {
+                html += `<div class="profile-item"><strong>🎨 Hobbies:</strong> <div class="profile-value">${Array.from(formData.selectedChips.hobbies).join(', ')}</div></div>`;
+            }
+
+            if (formData.favoriteBook) {
+                html += `<div class="profile-item"><strong>📚 Favorite book:</strong> <div class="profile-value">${formData.favoriteBook}</div></div>`;
+            }
+
+            if (formData.studyMusic) {
+                html += `<div class="profile-item"><strong>🎵 Study music:</strong> <div class="profile-value">${formData.studyMusic}</div></div>`;
+            }
+
+            if (formData.studyDrink) {
+                html += `<div class="profile-item"><strong>☕ Study fuel:</strong> <div class="profile-value">${formData.studyDrink}</div></div>`;
+            }
+
+            if (formData.selectedChips.learning.size > 0) {
+                html += `<div class="profile-item"><strong>🧠 Learns best:</strong> <div class="profile-value">${Array.from(formData.selectedChips.learning).join(', ')}</div></div>`;
+            }
+
+            if (formData.productiveTime) {
+                html += `<div class="profile-item"><strong>⏰ Most productive:</strong> <div class="profile-value">${formData.productiveTime}</div></div>`;
+            }
+
+            if (formData.dreamLanguage) {
+                html += `<div class="profile-item"><strong>🌍 Dream language:</strong> <div class="profile-value">${formData.dreamLanguage}</div></div>`;
+            }
+
+            if (formData.funFact) {
+                html += `<div class="profile-item"><strong>🤔 Fun fact:</strong> <div class="profile-value">${formData.funFact}</div></div>`;
+            }
+
+            if (formData.selectedChips.expectations.size > 0) {
+                html += `<div class="profile-item"><strong>🎯 Course goals:</strong> <div class="profile-value">${Array.from(formData.selectedChips.expectations).join(', ')}</div></div>`;
+            }
+
+            if (formData.selectedChips.future.size > 0) {
+                html += `<div class="profile-item"><strong>🚀 Future plans:</strong> <div class="profile-value">${Array.from(formData.selectedChips.future).join(', ')}</div></div>`;
+            }
+
+            if (formData.dreamJob) {
+                html += `<div class="profile-item"><strong>💭 Dream job:</strong> <div class="profile-value">${formData.dreamJob}</div></div>`;
+            }
+
+            profileContent.innerHTML = html;
+        }
+
+        async function sendDataToGoogleSheets() {
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('profileSection').style.display = 'none';
+
+            try {
+                const dataToSend = {
+                    timestamp: new Date().toISOString(),
+                    interviewer: formData.interviewerName || '',
+                    interviewee: formData.intervieweeName || '',
+                    nickname: formData.nickname || '',
+                    hometown: formData.hometown || '',
+                    currentCity: formData.currentCity || '',
+                    yearOfStudy: formData.yearOfStudy || '',
+                    zodiacSign: formData.zodiacSign || '',
+                    languages: formData.languages.map(l => `${l.name} (${l.level})`).join(', '),
+                    motivation: Array.from(formData.selectedChips.motivation).join(', '),
+                    languageExcitement: formData.languageExcitement || '',
+                    hobbies: Array.from(formData.selectedChips.hobbies).join(', '),
+                    favoriteBook: formData.favoriteBook || '',
+                    studyMusic: formData.studyMusic || '',
+                    studyDrink: formData.studyDrink || '',
+                    learningStyle: Array.from(formData.selectedChips.learning).join(', '),
+                    productiveTime: formData.productiveTime || '',
+                    dreamLanguage: formData.dreamLanguage || '',
+                    funFact: formData.funFact || '',
+                    courseExpectations: Array.from(formData.selectedChips.expectations).join(', '),
+                    futurePlans: Array.from(formData.selectedChips.future).join(', '),
+                    dreamJob: formData.dreamJob || '',
+                    workStyle: Array.from(formData.selectedChips.workStyle).join(', '),
+                    classNerves: formData.classNerves || ''
+                };
+
+                // Try to send data to Google Sheets
+                try {
+                    const response = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(dataToSend)
+                    });
+
+                    const result = await response.text();
+                    
+                    if (response.ok && result.includes('Success')) {
+                        // Success!
+                        document.getElementById('loadingSection').style.display = 'none';
+                        document.getElementById('successSection').style.display = 'block';
+                        setTimeout(() => {
+                            document.getElementById('successSection').style.display = 'none';
+                            document.getElementById('profileSection').style.display = 'block';
+                        }, 3000);
+                    } else {
+                        throw new Error('Google Apps Script error: ' + result);
+                    }
+                } catch (fetchError) {
+                    // If Google Apps Script fails, try alternative method
+                    console.warn('Google Apps Script failed, trying alternative method:', fetchError);
+                    
+                    // Create a form and submit it (alternative method for Google Apps Script)
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = GOOGLE_SCRIPT_URL;
+                    form.target = '_blank';
+                    form.style.display = 'none';
+                    
+                    // Add data as hidden inputs
+                    for (let key in dataToSend) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = dataToSend[key];
+                        form.appendChild(input);
+                    }
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                    document.body.removeChild(form);
+                    
+                    // Show success message anyway
+                    document.getElementById('loadingSection').style.display = 'none';
+                    document.getElementById('successSection').innerHTML = `
+                        <h4>📤 Data sent via form submission!</h4>
+                        <p>A new tab opened - if you see "Success", it worked!</p>
+                        <p>Check your Google Sheet to confirm.</p>
+                    `;
+                    document.getElementById('successSection').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('successSection').style.display = 'none';
+                        document.getElementById('profileSection').style.display = 'block';
+                    }, 5000);
+                }
+
+            } catch (error) {
+                console.error('Error sending data:', error);
+                document.getElementById('loadingSection').style.display = 'none';
+                document.getElementById('profileSection').style.display = 'block';
+                
+                // Show error with email option
+                alert(`❌ Error saving data: ${error.message}\n\n📸 Please take a screenshot of the profile!\n\n📧 Or email the data to your teacher.`);
+            }
+        }
+
+        function createNewProfile() {
+            if (confirm('Start a new interview? This will clear all current data.')) {
+                // Hide current step first
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+                
+                // Reset everything
+                currentStep = 0;
+                
+                // Clear formData completely
+                formData.languages = [];
+                formData.zodiacSign = '';
+                for (let key in formData.selectedChips) {
+                    formData.selectedChips[key].clear();
+                }
+                // Clear all other properties
+                delete formData.intervieweeName;
+                delete formData.interviewerName;
+                delete formData.nickname;
+                delete formData.hometown;
+                delete formData.currentCity;
+                delete formData.yearOfStudy;
+                delete formData.languageExcitement;
+                delete formData.favoriteBook;
+                delete formData.studyMusic;
+                delete formData.studyDrink;
+                delete formData.productiveTime;
+                delete formData.dreamLanguage;
+                delete formData.funFact;
+                delete formData.dreamJob;
+                delete formData.classNerves;
+
+                // Clear all form elements
+                document.querySelectorAll('input, textarea').forEach(el => {
+                    el.value = '';
+                });
+                
+                // Clear all selections
+                document.querySelectorAll('.chip.selected, .zodiac-chip.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+
+                // Remove extra language items (keep only the first one)
+                const languageContainer = document.getElementById('languageInputs');
+                const extraItems = languageContainer.querySelectorAll('.language-item:not(:first-child)');
+                extraItems.forEach(item => item.remove());
+
+                // Clear the first language item too
+                const firstLanguageItem = languageContainer.querySelector('.language-item:first-child');
+                if (firstLanguageItem) {
+                    firstLanguageItem.querySelector('input').value = '';
+                    firstLanguageItem.querySelectorAll('.chip.selected').forEach(chip => {
+                        chip.classList.remove('selected');
+                    });
+                }
+
+                // Show setup step (step 0)
+                document.querySelector('[data-step="0"]').classList.add('active');
+                
+                // Update UI
+                updateProgressBar();
+                updateNavigationButtons();
+                updateStepCounter();
+                
+                // Clear any error messages
+                document.querySelectorAll('.error').forEach(error => {
+                    error.textContent = '';
+                });
+            }
+        }
+
+        // Touch gestures
+        let touchStartX = null;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            if (!touchStartX) return;
+            
+            const touchEndX = e.changedTouches[0].clientX;
+            const difference = touchStartX - touchEndX;
+            
+            if (Math.abs(difference) > 50) {
+                if (difference > 0 && currentStep < totalSteps - 1) {
+                    changeStep(1);
+                } else if (difference < 0 && currentStep > 0) {
+                    changeStep(-1);
+                }
+            }
+            
+            touchStartX = null;
+        });
+    </script>
+</body>
+</html>
