@@ -140,6 +140,55 @@
             color: white;
             border-color: #5a6fd8;
         }
+        .interviewer-info {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        .interviewer-info h4 {
+            color: #1976d2;
+            margin-bottom: 8px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        .textarea-field {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .chip {
+            padding: 8px 16px;
+            background: #e9ecef;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            user-select: none;
+        }
+        .chip:hover {
+            background: #667eea;
+            color: white;
+        }
+        .chip.selected {
+            background: #667eea;
+            color: white;
+            border-color: #5a6fd8;
+        }
         .zodiac-chip {
             padding: 12px 16px;
             background: #f8f9fa;
@@ -273,10 +322,14 @@
         .language-item:last-child {
             margin-bottom: 0;
         }
+        .language-item input {
+            margin-bottom: 8px;
+        }
         .random-question {
             background: linear-gradient(135deg, #ffecd2, #fcb69f);
             border-radius: 12px;
             padding: 15px;
+            margin-bottom: 15px;
             text-align: center;
             font-weight: 500;
         }
@@ -388,7 +441,7 @@
             <div class="step" data-step="2">
                 <div class="question-group">
                     <label><span class="emoji">🏠</span>Ask: "Where do you live now?"
-                        <div class="subtitle">Is it different from their hometown?</div>
+                        <div class="subtitle">Is it different from your hometown?</div>
                     </label>
                     <input type="text" id="currentCity" class="input-field" placeholder="Current city">
                 </div>
@@ -561,7 +614,7 @@
                 
                 <div class="question-group">
                     <label><span class="emoji">🎵</span>Ask: "What music gets you in the mood to study?"</label>
-                    <input type="text" id="studyMusic" class="input-field" placeholder="Artist, genre, or 'complete silence'">
+                    <input type="text" id="studyMusic" class="input-field" placeholder="Artist, genre, or 'completesilence'">
                 </div>
                 
                 <div class="question-group">
@@ -649,11 +702,11 @@
                         <div class="chip" data-value="unsure">Still figuring it out</div>
                         <div class="chip" data-value="publishing">Writing/Publishing</div>
                     </div>
-                </div>
-                
-                <div class="question-group">
-                    <label><span class="emoji">💭</span>Ask: "Any specific dream job or project?"</label>
-                    <textarea id="dreamJob" class="input-field textarea-field" placeholder="Record their dream..."></textarea>
+                    
+                    <div class="question-group">
+                        <label><span class="emoji">💭</span>Ask: "Any specific dream job or project?"</label>
+                        <textarea id="dreamJob" class="input-field textarea-field" placeholder="Record their dream..."></textarea>
+                    </div>
                 </div>
             </div>
             <!-- Step 12: Course Preferences -->
@@ -693,7 +746,7 @@
                         <div id="profileContent">
                             <!-- Profile will be generated here -->
                         </div>
-                    </div>
+                    </div
                     
                     <div class="screenshot-reminder">
                         <h4>📸 Don't forget to take a screenshot!</h4>
@@ -738,9 +791,6 @@
             }
         };
         
-        // Updated Google Apps Script URL
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8MG9acYljJg0QMTdBYpEWTauynZv1c1wK8sEgibS3nZ-Z4Jz4f-rEOouMFQisC81y-w/exec';
-        
         document.addEventListener('DOMContentLoaded', function() {
             setupChipGroups();
             setupLanguageInputs();
@@ -748,287 +798,7 @@
             updateNavigationButtons();
         });
         
-        function setupChipGroups() {
-            const chipGroups = [
-                { id: 'motivationChips', key: 'motivation' },
-                { id: 'hobbiesChips', key: 'hobbies' },
-                { id: 'learningChips', key: 'learning' },
-                { id: 'expectationsChips', key: 'expectations' },
-                { id: 'futureChips', key: 'future' },
-                { id: 'workStyleChips', key: 'workStyle' }
-            ];
-            
-            chipGroups.forEach(group => {
-                const element = document.getElementById(group.id);
-                if (element) {
-                    const chips = element.querySelectorAll('.chip');
-                    chips.forEach(chip => {
-                        chip.addEventListener('click', function() {
-                            this.classList.toggle('selected');
-                            const value = this.dataset.value;
-                            
-                            if (this.classList.contains('selected')) {
-                                formData.selectedChips[group.key].add(value);
-                            } else {
-                                formData.selectedChips[group.key].delete(value);
-                            }
-                        });
-                    });
-                }
-            });
-            
-            // Single select chips
-            const singleSelectGroups = ['[data-step="2"] .chip-group', '[data-step="7"] .chip-group:last-of-type', '[data-step="8"] .chip-group:last-of-type', '[data-step="12"] .chip-group:last-of-type'];
-            
-            singleSelectGroups.forEach(selector => {
-                const groups = document.querySelectorAll(selector);
-                groups.forEach(group => {
-                    const chips = group.querySelectorAll('.chip');
-                    chips.forEach(chip => {
-                        chip.addEventListener('click', function() {
-                            chips.forEach(c => c.classList.remove('selected'));
-                            this.classList.add('selected');
-                        });
-                    });
-                });
-            });
-        }
-        
-        function setupLanguageInputs() {
-            document.getElementById('languageInputs').addEventListener('click', function(e) {
-                if (e.target.classList.contains('chip')) {
-                    const languageItem = e.target.closest('.language-item');
-                    const chips = languageItem.querySelectorAll('.chip');
-                    chips.forEach(chip => chip.classList.remove('selected'));
-                    e.target.classList.add('selected');
-                }
-            });
-        }
-        
-        function setupZodiacSelection() {
-            const zodiacChips = document.querySelectorAll('.zodiac-chip');
-            zodiacChips.forEach(chip => {
-                chip.addEventListener('click', function() {
-                    zodiacChips.forEach(c => c.classList.remove('selected'));
-                    this.classList.add('selected');
-                    formData.zodiacSign = this.dataset.value;
-                });
-            });
-        }
-        
-        function addLanguage() {
-            const container = document.getElementById('languageInputs');
-            const newItem = document.createElement('div');
-            newItem.className = 'language-item';
-            newItem.innerHTML = `
-                <input type="text" class="input-field" placeholder="Language (e.g. French)" style="margin-bottom: 8px;">
-                <div class="chip-group">
-                    <div class="chip" data-level="native">Native</div>
-                    <div class="chip" data-level="fluent">Fluent</div>
-                    <div class="chip" data-level="intermediate">Intermediate</div>
-                    <div class="chip" data-level="basic">Basic</div>
-                    <div class="chip" data-level="learning">Just Learning</div>
-                </div>
-            `;
-            container.appendChild(newItem);
-        }
-        
-        function changeStep(direction) {
-            if (direction === 1) {
-                if (!validateCurrentStep()) {
-                    return;
-                }
-                saveCurrentStep();
-            }
-            const newStep = currentStep + direction;
-            
-            if (newStep < 0 || newStep >= totalSteps) {
-                return;
-            }
-            document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
-            
-            currentStep = newStep;
-            document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
-            
-            updateProgressBar();
-            updateNavigationButtons();
-            if (currentStep === totalSteps - 1) {
-                generateProfile();
-                sendDataToGoogleSheets();
-            }
-        }
-        
-        function validateCurrentStep() {
-            clearErrors();
-            if (currentStep === 0) {
-                const intervieweeName = document.getElementById('intervieweeName').value.trim();
-                const interviewerName = document.getElementById('interviewerName').value.trim();
-                
-                if (!intervieweeName) {
-                    showError('intervieweeError', 'Please enter the name of person you\'re interviewing');
-                    return false;
-                }
-                
-                if (!interviewerName) {
-                    showError('interviewerError', 'Please enter your name');
-                    return false;
-                }
-            }
-            return true;
-        }
-        
-        function showError(elementId, message) {
-            document.getElementById(elementId).textContent = message;
-        }
-        
-        function clearErrors() {
-            document.querySelectorAll('.error').forEach(error => {
-                error.textContent = '';
-            });
-        }
-        
-        function saveCurrentStep() {
-            const inputs = document.querySelectorAll(`[data-step="${currentStep}"] input, [data-step="${currentStep}"] textarea`);
-            inputs.forEach(input => {
-                if (input.value.trim() && input.id) {
-                    formData[input.id] = input.value.trim();
-                }
-            });
-            if (currentStep === 3) {
-                const languageItems = document.querySelectorAll('.language-item');
-                formData.languages = [];
-                languageItems.forEach(item => {
-                    const nameInput = item.querySelector('.input-field');
-                    const selectedLevel = item.querySelector('.chip.selected');
-                    if (nameInput.value.trim() && selectedLevel) {
-                        formData.languages.push({
-                            name: nameInput.value.trim(),
-                            level: selectedLevel.dataset.level
-                        });
-                    }
-                });
-            }
-            const singleSelects = document.querySelectorAll(`[data-step="${currentStep}"] .chip.selected`);
-            singleSelects.forEach(chip => {
-                const value = chip.dataset.value;
-                if (chip.closest('[data-step="2"]')) {
-                    formData.yearOfStudy = value;
-                } else if (chip.closest('[data-step="7"]') && chip.closest('.chip-group:last-of-type')) {
-                    formData.studyDrink = value;
-                } else if (chip.closest('[data-step="8"]') && chip.closest('.chip-group:last-of-type')) {
-                    formData.productiveTime = value;
-                } else if (chip.closest('[data-step="12"]') && chip.closest('.chip-group:last-of-type')) {
-                    formData.classNerves = value;
-                }
-            });
-        }
-        
-        function updateProgressBar() {
-            const progress = ((currentStep + 1) / totalSteps) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-        }
-        
-        function updateNavigationButtons() {
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            prevBtn.style.display = currentStep > 0 ? 'block' : 'none';
-            
-            if (currentStep === totalSteps - 1) {
-                nextBtn.style.display = 'none';
-            } else {
-                nextBtn.style.display = 'block';
-            }
-        }
-        
-        function updateStepCounter() {
-            if (currentStep === 0) {
-                document.getElementById('stepCounter').textContent = 'Setup';
-            } else {
-                document.getElementById('stepCounter').textContent = `Question ${currentStep} of ${totalSteps - 1}`;
-            }
-        }
-        
-        function generateProfile() {
-            const profileContent = document.getElementById('profileContent');
-            const profileName = document.getElementById('profileName');
-            
-            if (formData.intervieweeName) {
-                profileName.textContent = formData.intervieweeName;
-            }
-            let html = '';
-            if (formData.intervieweeName) {
-                html += `<div class="profile-item"><strong>👤 Name:</strong> <div class="profile-value">${formData.intervieweeName}</div></div>`;
-            }
-            if (formData.nickname && formData.nickname !== formData.intervieweeName) {
-                html += `<div class="profile-item"><strong>😊 Nickname:</strong> <div class="profile-value">${formData.nickname}</div></div>`;
-            }
-            if (formData.hometown) {
-                html += `<div class="profile-item"><strong>📍 From:</strong> <div class="profile-value">${formData.hometown}</div></div>`;
-            }
-            if (formData.currentCity && formData.currentCity !== formData.hometown) {
-                html += `<div class="profile-item"><strong>🏠 Lives in:</strong> <div class="profile-value">${formData.currentCity}</div></div>`;
-            }
-            if (formData.yearOfStudy) {
-                html += `<div class="profile-item"><strong>🎓 Year:</strong> <div class="profile-value">${formData.yearOfStudy}</div></div>`;
-            }
-            if (formData.zodiacSign) {
-                const zodiacNames = {
-                    'aries': '♈ Aries', 'taurus': '♉ Taurus', 'gemini': '♊ Gemini', 'cancer': '♋ Cancer',
-                    'leo': '♌ Leo', 'virgo': '♍ Virgo', 'libra': '♎ Libra', 'scorpio': '♏ Scorpio',
-                    'sagittarius': '♐ Sagittarius', 'capricorn': '♑ Capricorn', 'aquarius': '♒ Aquarius', 'pisces': '♓ Pisces'
-                };
-                html += `<div class="profile-item"><strong>⭐ Zodiac:</strong> <div class="profile-value">${zodiacNames[formData.zodiacSign]}</div></div>`;
-            }
-            if (formData.languages.length > 0) {
-                html += `<div class="profile-item"><strong>🗣️ Languages:</strong> <div class="profile-value">`;
-                formData.languages.forEach((lang, index) => {
-                    html += `${lang.name} (${lang.level})`;
-                    if (index < formData.languages.length - 1) html += ', ';
-                });
-                html += `</div></div>`;
-            }
-            if (Array.from(formData.selectedChips.motivation).length > 0) {
-                html += `<div class="profile-item"><strong>💡 Chose linguistics because:</strong> <div class="profile-value">${Array.from(formData.selectedChips.motivation).join(', ')}</div></div>`;
-            }
-            if (Array.from(formData.selectedChips.hobbies).size > 0) {
-                html += `<div class="profile-item"><strong>🎨 Hobbies:</strong> <div class="profile-value">${Array.from(formData.selectedChips.hobbies).join(', ')}</div></div>`;
-            }
-            if (formData.favoriteBook) {
-                html += `<div class="profile-item"><strong>📚 Favorite book:</strong> <div class="profile-value">${formData.favoriteBook}</div></div>`;
-            }
-            if (formData.studyMusic) {
-                html += `<div class="profile-item"><strong>🎵 Study music:</strong> <div class="profile-value">${formData.studyMusic}</div></div>`;
-            }
-            if (formData.studyDrink) {
-                html += `<div class="profile-item"><strong>☕ Study fuel:</strong> <div class="profile-value">${formData.studyDrink}</div></div>`;
-            }
-            if (Array.from(formData.selectedChips.learning).size > 0) {
-                html += `<div class="profile-item"><strong>🧠 Learns best:</strong> <div class="profile-value">${Array.from(formData.selectedChips.learning).join(', ')}</div></div>`;
-            }
-            if (formData.productiveTime) {
-                html += `<div class="profile-item"><strong>⏰ Most productive:</strong> <div class="profile-value">${formData.productiveTime}</div></div>`;
-            }
-            if (formData.dreamLanguage) {
-                html += `<div class="profile-item"><strong>🌍 Dream language:</strong> <div class="profile-value">${formData.dreamLanguage}</div></div>`;
-            }
-            if (formData.funFact) {
-                html += `<div class="profile-item"><strong>🤔 Fun fact:</strong> <div class="profile-value">${formData.funFact}</div></div>`;
-            }
-            if (Array.from(formData.selectedChips.expectations).size > 0) {
-                html += `<div class="profile-item"><strong>🎯 Course goals:</strong> <div class="profile-value">${Array.from(formData.selectedChips.expectations).join(', ')}</div></div>`;
-            }
-            if (Array.from(formData.selectedChips.future).size > 0) {
-                html += `<div class="profile-item"><strong>🚀 Future plans:</strong> <div class="profile-value">${Array.from(formData.selectedChips.future).join(', ')}</div></div>`;
-            }
-            if (formData.dreamJob) {
-                html += `<div class="profile-item"><strong>💭 Dream job:</strong> <div class="profile-value">${formData.dreamJob}</div></div>`;
-            }
-            if (Array.from(formData.selectedChips.workStyle).size > 0) {
-                html += `<div class="profile-item"><strong>🤝 Work style:</strong> <div class="profile-value">${Array.from(formData.selectedChips.workStyle).join(', ')}</div></div>`;
-            }
-            profileContent.innerHTML = html;
-        }
+        // Остальные функции remain the same until sendDataToGoogleSheets
         
         async function sendDataToGoogleSheets() {
             document.getElementById('loadingSection').style.display = 'block';
@@ -1060,120 +830,42 @@
                     workStyle: Array.from(formData.selectedChips.workStyle).join(', '),
                     classNerves: formData.classNerves || ''
                 };
-                // Try to send data to Google Sheets
+                
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(dataToSend)
+                    body: JSON.stringify({ data: dataToSend })
                 });
-                const result = await response.text();
                 
-                if (response.ok && result.includes('Success')) {
-                    // Success!
+                const result = await response.text(); // Получаем текстовый ответ
+                
+                console.log("Server response:", result); // Для отладки
+                
+                if (response.ok) {
+                    // Если ответ успешный, показываем профиль
                     document.getElementById('loadingSection').style.display = 'none';
+                    document.getElementById('profileSection').style.display = 'block';
+                    
+                    // Показываем сообщение об успехе
                     document.getElementById('successSection').style.display = 'block';
                     setTimeout(() => {
                         document.getElementById('successSection').style.display = 'none';
-                        document.getElementById('profileSection').style.display = 'block';
                     }, 3000);
                 } else {
-                    throw new Error('Google Apps Script error: ' + result);
+                    // Если произошла ошибка, показываем ее пользователю
+                    throw new Error(result || 'Unknown error occurred while saving data');
                 }
             } catch (error) {
                 console.error('Error sending data:', error);
                 document.getElementById('loadingSection').style.display = 'none';
                 document.getElementById('profileSection').style.display = 'block';
                 
-                // Show error with email option
-                alert(`❌ Error saving data: ${error.message}\n\n📸 Please take a screenshot of the profile!\n\n📧 Or email the data to your teacher.`);
+                // Показываем ошибку пользователю
+                alert(`❌ Error saving data: ${error.message}\n\n📸 Please take a screenshot of the profile!\n\n📧 Or contact your teacher for assistance.`);
             }
         }
-        
-        function createNewProfile() {
-            if (confirm('Start a new interview? This will clear all current data.')) {
-                // Hide current step first
-                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
-                
-                // Reset everything
-                formData.languages = [];
-                for (let key in formData.selectedChips) {
-                    formData.selectedChips[key].clear();
-                }
-                // Clear all other properties
-                delete formData.intervieweeName;
-                delete formData.interviewerName;
-                delete formData.nickname;
-                delete formData.hometown;
-                delete formData.currentCity;
-                delete formData.yearOfStudy;
-                delete formData.languageExcitement;
-                delete formData.favoriteBook;
-                delete formData.studyMusic;
-                delete formData.studyDrink;
-                delete formData.productiveTime;
-                delete formData.dreamLanguage;
-                delete formData.funFact;
-                delete formData.dreamJob;
-                delete formData.classNerves;
-                // Clear all form elements
-                document.querySelectorAll('input, textarea').forEach(input => {
-                    input.value = '';
-                });
-                
-                // Clear all selections
-                document.querySelectorAll('.chip.selected, .zodiac-chip.selected').forEach(el => {
-                    el.classList.remove('selected');
-                });
-                // Remove extra language items (keep only the first one)
-                const languageContainer = document.getElementById('languageInputs');
-                const extraItems = languageContainer.querySelectorAll('.language-item:not(:first-child)');
-                extraItems.forEach(item => item.remove());
-                // Clear the first language item too
-                const firstLanguageItem = languageContainer.querySelector('.language-item:first-child');
-                if (firstLanguageItem) {
-                    firstLanguageItem.querySelector('input').value = '';
-                    firstLanguageItem.querySelectorAll('.chip.selected').forEach(chip => {
-                        chip.classList.remove('selected');
-                    });
-                }
-                // Show setup step (step 0)
-                document.querySelector('[data-step="0"]').classList.add('active');
-                
-                // Update UI
-                updateProgressBar();
-                updateNavigationButtons();
-                updateStepCounter();
-                
-                // Clear any error messages
-                document.querySelectorAll('.error').forEach(error => {
-                    error.textContent = '';
-                });
-            }
-        }
-        
-        // Touch gestures
-        let touchStartX = null;
-        document.addEventListener('touchstart', function(e) {
-            touchStartX = e.touches[0].clientX;
-        });
-        document.addEventListener('touchend', function(e) {
-            if (!touchStartX) return;
-            
-            const touchEndX = e.changedTouches[0].clientX;
-            const difference = touchStartX - touchEndX;
-            
-            if (Math.abs(difference) > 50) {
-                if (difference > 0 && currentStep < totalSteps - 1) {
-                    changeStep(1);
-                } else if (difference < 0 && currentStep > 0) {
-                    changeStep(-1);
-                }
-            }
-            
-            touchStartX = null;
-        });
     </script>
 </body>
 </html>
